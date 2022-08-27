@@ -1,6 +1,8 @@
 from flask import Flask, render_template,request
 import pandas as pd
 from now_place import NOW_PLACE
+from covid19 import GEO
+import folium
 
 app = Flask(__name__)
 
@@ -61,6 +63,37 @@ def medical():
             if dic['lon'] <= lon1 and dic['lon'] >= lon2:
                 iryokikan_2.append(dic)
     return render_template('medical.html', markers3=kensajo_2, markers4=iryokikan_2)
+
+# @app.route('/geo')
+# def polygon_plot():
+#     g = GEO()
+#     geometry = g.polygon()
+#     print(geometry)
+#     return render_template('covid19.html', markers=geometry)
+
+@app.route('/geo')
+def polygon_plot():
+    g = GEO()
+    geometry = g.polygon()
+
+    map = folium.Map(location=[35.68066659206367, 139.7681614127473], zoom_start=14)
+    
+    max = 0
+    for geos in geometry:
+        if max < geos[1]:
+            max = geos[1]
+
+    for geos in geometry:
+        geo = geos[0]
+        covid_num = geos[1] / max
+
+        map.choropleth(geo_data=geo, 
+                fill_color="red", fill_opacity=0.5 * covid_num, 
+                line_color="black", line_opacity=0.3)
+    
+    filepath = 'templates/covid19.html'
+    map.save(filepath)
+    return render_template("covid19.html")
 
 if __name__ == "__main__":
     app.run(debug = True)

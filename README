@@ -1,2 +1,9 @@
-pandas
-requests
+https://geopandas.org/en/stable/getting_started/install.html
+
+conda create -n geo_env
+conda activate geo_env
+conda config --env --add channels conda-forge
+conda config --env --set channel_priority strict
+conda install python=3 geopandas
+
+conda install flask

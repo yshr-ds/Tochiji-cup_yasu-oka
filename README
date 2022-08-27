@@ -9,3 +9,6 @@ conda install python=3 geopandas
 conda install flask
 conda uninstall pyscopg2
 conda install pyscopg2-binary      
+
+
+var.pyのusername, passwordを変更

@@ -35,6 +35,20 @@
 </head>
 
 <body>
+    <!-- <label class="open" for="pop-up"> -->
+        <label class="btn btn--circle" for="pop-up"><i class="far fa-envelope"></i><br>Search<br>here<i class="fas fa-angle-down fa-position-bottom"></i></label>
+    <!-- </label> -->
+    <input type="checkbox" id="pop-up">
+    <div class = "overlay">
+        <div class ="window">
+            <label class="close" for = "pop-up" >x </label>
+            <form id="form1" action="/" method="POST">
+                <input id ="sbox" id="s" name="s" type ="text" placeholder="キーワードを入力"/>
+                <input id ="sbtn" type="submit" value="検索" />
+            </form>
+        </div>
+    </div>
+
     <nav class="navbar navbar-expand-sm navbar-light">
         <div class="container">
             <a class="navbar-brand" href="/">

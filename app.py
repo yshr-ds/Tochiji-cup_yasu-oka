@@ -158,5 +158,59 @@ def polygon_plot():
     map.save(filepath)
     return render_template("covid19.html")
 
+# def search(self):
+#     if request.method == 'POST':
+#         word = request.form['s']
+#         query =f"SELECT 事業所・店舗名, 緯度, 経度 FROM leader_map WHERE 事業所・店舗名 LIKE '%ピアトゥー%' "
+#         data = ()
+#         db = DB(Var.hostname, Var.port, Var.dbname, Var.username, Var.password)
+#         db.execute(query, data)
+
+@app.route('/',methods=['POST', "GET"])
+def search_plot():
+    
+    g = GEO()
+    geometry = g.polygon()
+    
+    map = folium.Map(location=[35.68066659206367, 139.7681614127473], zoom_start=14)
+    
+    if request.method == 'POST':
+        word = request.form['s']
+        conn = psycopg2.connect("host=localhost port=5432 dbname=tochiji user=yasu5 password=yuto5715")
+        cur = conn.cursor()
+        cur.execute(f"SELECT 事業所・店舗名, 緯度, 経度 FROM leader_map WHERE 事業所・店舗名 LIKE '%{word}%' ")
+        for row in cur:
+            # print(row)
+            folium.Marker(
+            location =[row[1],row[2]],
+            popup =row[0],
+            icon = folium.Icon(color='red',icon='home')
+        ).add_to(map)
+        
+        cur.close()
+        conn.close()
+        
+    max = 0
+    for geos in geometry:
+        if max < geos[1]:
+            max = geos[1]
+
+    for geos in geometry:
+        geo = geos[0]
+        covid_num = geos[1] / max
+
+        map.choropleth(geo_data=geo, 
+                fill_color="red", fill_opacity=0.5 * covid_num, 
+                line_color="black", line_opacity=0.3)
+    
+    filepath = 'templates/covid19.html'
+    map.save(filepath)
+    
+    return render_template("covid19.html")
+        
+        
+
+
+
 if __name__ == "__main__":
     app.run(debug = True)

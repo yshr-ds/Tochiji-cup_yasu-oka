@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
 
 <title>Tochiji Cup's sample_site</title>
@@ -28,11 +28,34 @@ crossorigin="">
 <script src="{{ url_for('static', filename='js/index.js') }}" /></script>
 <script>
 
-{% for marker in markers %}
+// markers1
+{% for marker in markers1 %}
 L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}]).addTo(map)
-.bindPopup("{{ marker['popup'] }}")
+.bindPopup("{{ marker['name'] }}")
 .openPopup();
 {% endfor %}
+
+// markers2
+{% for marker in markers2 %}
+L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}]).addTo(map)
+.bindPopup("{{ marker['name'] }}")
+.openPopup();
+{% endfor %}
+
+// markers3
+{% for marker in markers3 %}
+L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}]).addTo(map)
+.bindPopup("{{ marker['name'] }}")
+.openPopup();
+{% endfor %}
+
+// markers4
+{% for marker in markers4 %}
+L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}]).addTo(map)
+.bindPopup("{{ marker['name'] }}")
+.openPopup();
+{% endfor %}
+
 </script>
 </body>
 </html>

@@ -1,0 +1,62 @@
+{% extends "index.html" %}
+{% block content %}
+
+<div id="map"></div>
+<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+
+<!-- マーカー色変更 -->
+<script src="{{ url_for('static', filename='js/leaflet.sprite.js') }}"></script>
+
+<!-- 現在地表示 -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.usermarker.css') }}" />
+<script src="{{ url_for('static', filename='js/leaflet.usermarker.js') }}"></script>
+
+<script>
+
+    L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.3.1/dist/images/';
+
+    // // markers1
+    {% for marker in markers1 %}
+    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('green') }).addTo(map)
+    .bindPopup("{{ marker['name'] }}")
+    .openPopup();
+    {% endfor %}
+
+    // // markers2
+    {% for marker in markers2 %}
+    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('orange') }).addTo(map)
+    .bindPopup("{{ marker['name'] }}")
+    .openPopup();
+    {% endfor %}
+
+    // 現在地
+    var options = {
+        pulsing: true
+        , accuracy: 100 // meters
+        , smallIcon: true
+    };
+
+    var marker;
+    map.on("locationfound", function (location) {
+        if (!marker) {
+            marker = L.userMarker(location.latlng).addTo(map);
+        }
+        marker.setLatLng(location.latlng);
+        marker.setPulsing(true);
+    });
+
+    map.on('locationerror', function (e) {
+        alert('現在地が取得できませんでした。');
+    });
+
+    map.locate({
+        watch: false,
+        locate: true,
+        setView: false,
+        enableHighAccuracy: true
+    });
+
+
+</script>
+
+{% endblock %}

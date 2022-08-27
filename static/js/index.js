@@ -5,3 +5,4 @@ attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStree
 }).addTo(map);
 
 L.control.scale({imperial:false}).addTo(map);
+L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.3.1/dist/images/';

@@ -7,4 +7,5 @@ conda config --env --set channel_priority strict
 conda install python=3 geopandas
 
 conda install flask
+conda uninstall pyscopg2
 conda install pyscopg2-binary      

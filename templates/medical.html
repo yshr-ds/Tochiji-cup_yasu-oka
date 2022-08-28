@@ -17,16 +17,28 @@
 
     // // markers3
     {% for marker in markers3 %}
-    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('yellow') }).addTo(map)
-        .bindPopup("{{ marker['name'] }}")
-        .openPopup();
+    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('yellow') }).addTo(map);
+    var popup = L.popup();
+    function onMarker2Click(e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent("{{ marker['name'] }}")
+        .openOn(map);
+    }
+    map.on('click', onMarker2Click);
     {% endfor %}
 
     // markers4
     {% for marker in markers4 %}
-    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('red') }).addTo(map)
-        .bindPopup("{{ marker['name'] }}")
-        .openPopup();
+    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('red') }).addTo(map);
+    var popup = L.popup();
+    function onMarker2Click(e) {
+    popup
+        .setLatLng(e.latlng)
+        .setContent("{{ marker['name'] }}")
+        .openOn(map);
+    }
+    map.on('click', onMarker2Click);
     {% endfor %}
 
     // 現在地
@@ -35,6 +47,7 @@
         , accuracy: 100 // meters
         , smallIcon: true
     };
+    L.userMarker([35.6809591,139.7673068], options).addTo(map).bindPopup("現在地");
 
     var marker;
     map.on("locationfound", function (location) {

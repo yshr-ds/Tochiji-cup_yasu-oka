@@ -12,22 +12,20 @@
 <script src="{{ url_for('static', filename='js/leaflet.usermarker.js') }}"></script>
 
 <script>
-
     L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.3.1/dist/images/';
 
     // // markers1
     {% for marker in markers1 %}
     L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('green') }).addTo(map)
-    .bindPopup("{{ marker['name'] }}")
-    .openPopup();
+    .bindPopup("{{ marker['name'] }}").openPopup();
     {% endfor %}
 
-    // // markers2
+    // markers2
     {% for marker in markers2 %}
     L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('orange') }).addTo(map)
-    .bindPopup("{{ marker['name'] }}")
-    .openPopup();
+    .bindPopup("{{ marker['name'] }}").openPopup();
     {% endfor %}
+
 
     // 現在地
     var options = {
@@ -35,6 +33,7 @@
         , accuracy: 100 // meters
         , smallIcon: true
     };
+    L.userMarker([35.6809591,139.7673068], options).addTo(map).bindPopup("現在地");
 
     var marker;
     map.on("locationfound", function (location) {

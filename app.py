@@ -49,8 +49,8 @@ def food():
     return render_template('food.html'
                            ,markers1=tokyo_leader
                         ,markers2=tokyo_tenpo
-                           )
-
+                        )
+    
 
 
 @app.route('/medical')

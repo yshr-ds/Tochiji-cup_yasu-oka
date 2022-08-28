@@ -21,11 +21,22 @@ class GEO:
         #現在の日付
         # dt_now = datetime.date.today()
         # cov_now = cov[cov['公表_年月日'] == dt_now]
-        cov_now = cov[cov['公表_年月日'] == '2022-08-23']
+        date_rei = '2022-08-23'
+        cov_now = cov[cov['公表_年月日'] == date_rei]
 
         df_new = pd.merge(df, cov_now, on='市区町村名')
 
-        geometry = []
-        for geo in zip(df_new['geometry'], df_new['陽性者数']):
-            geometry.append(geo)
-        return geometry
+        # 市区町村の人数
+        nin = pd.read_csv('data/tn20qv020300.csv', encoding='shift-jis', header=10)
+        nin = nin[['地域', '令和2年10月1日(国勢調査) Oct. 1, 2020 (Census)']]
+        nin = nin.rename(columns={'地域': '市区町村名', '令和2年10月1日(国勢調査) Oct. 1, 2020 (Census)':'人口'})
+
+        # 結合
+        df_new2 = pd.merge(df_new, nin, on='市区町村名')
+        df_new2 = df_new2.astype({'人口': int})
+        df_new2['陽性者割合'] = df_new2['陽性者数'] / df_new2['人口']
+
+        poly = 'data/N03-19_13_190101.geojson'
+        df_n = df_new2[['市区町村名','陽性者割合']]
+        date = date_rei
+        return df_n, date, poly

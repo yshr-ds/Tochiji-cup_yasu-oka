@@ -15,35 +15,6 @@ app = Flask(__name__)
 da = DataAccess()
 spot_list = da.get_spots()
 
-# @app.route('/')
-# def food():
-#     # 現在地取得
-#     n_place=NOW_PLACE()
-#     lat1, lat2, lon1, lon2 = n_place.n_place()
-
-#     # csv
-#     tokyo_l = pd.read_csv('data/130001_tokyo_leadermap_ver1.0.csv')
-#     tokyo_t = pd.read_csv('data/130001_tokyo_tenpomap_ver1.0.csv')
-
-#     # 東京のコロナ対策リーダー_markers1
-#     tokyo_leader = []
-#     for name, longitude, latitude in zip(tokyo_l['事業所・店舗名'], tokyo_l['経度'], tokyo_l['緯度']):
-#         name = str(name)
-#         dic = {'name':name.replace('\r', ''), 'lat':latitude, 'lon':longitude}
-#         if dic['lat'] <= lat1 and dic['lat'] >= lat2:
-#             if dic['lon'] <= lon1 and dic['lon'] >= lon2:
-#                 tokyo_leader.append(dic)
-    
-#     # 東京の感染防止ステッカー店_markers2
-#     tokyo_tenpo = []
-#     for name, gyosyu, longitude, latitude in zip(tokyo_t['事業所店舗名'], tokyo_t['業種'], tokyo_t['経度'], tokyo_t['緯度']):
-#         name = str(name)
-#         dic = {'name':name.replace('\r', ''), 'gyosyu':gyosyu, 'lat':latitude, 'lon':longitude}
-#         if dic['lat'] <= lat1 and dic['lat'] >= lat2:
-#             if dic['lon'] <= lon1 and dic['lon'] >= lon2:
-#                 tokyo_tenpo.append(dic)
-#     return render_template('food.html',markers1=tokyo_leader, markers2=tokyo_tenpo)
-
 @app.route('/')
 def food():
     # 現在地取得
@@ -81,32 +52,6 @@ def food():
                            )
 
 
-# @app.route('/medical')
-# def medical():
-#     # 現在地取得
-#     n_place=NOW_PLACE()
-#     lat1, lat2, lon1, lon2 = n_place.n_place()
-
-#     # csv
-#     kensajo = pd.read_csv('data/kensajo_ver1.0.csv',encoding="shift-jis", header=None)
-#     iryokikan = pd.read_csv('data/医療機関_ver1.0.csv')
-
-#     # 東京の検査所_markers3
-#     kensajo_2 = []
-#     for name, longitude, latitude in zip(kensajo[0], kensajo[5], kensajo[4]):
-#         dic = {'name':name.replace('\r', ''),'lat':latitude, 'lon':longitude}
-#         if dic['lat'] <= lat1 and dic['lat'] >= lat2:
-#             if dic['lon'] <= lon1 and dic['lon'] >= lon2:
-#                 kensajo_2.append(dic)
-
-#     # 東京の医療機関_markers4
-#     iryokikan_2 = []
-#     for name, longitude, latitude in zip(iryokikan['医療機関名'], iryokikan['Unnamed: 40'], iryokikan['Unnamed: 39']):
-#         dic = {'name':name.replace('\r', ''),'lat':latitude, 'lon':longitude}
-#         if dic['lat'] <= lat1 and dic['lat'] >= lat2:
-#             if dic['lon'] <= lon1 and dic['lon'] >= lon2:
-#                 iryokikan_2.append(dic)
-#     return render_template('medical.html', markers3=kensajo_2, markers4=iryokikan_2)
 
 @app.route('/medical')
 def medical():
@@ -137,23 +82,31 @@ def medical():
 @app.route('/geo')
 def polygon_plot():
     g = GEO()
-    geometry = g.polygon()
+    # geometry = g.polygon()
+    df, date, poly = g.polygon()
 
     map = folium.Map(location=[35.68066659206367, 139.7681614127473], zoom_start=14)
-    
-    max = 0
-    for geos in geometry:
-        if max < geos[1]:
-            max = geos[1]
 
-    for geos in geometry:
-        geo = geos[0]
-        covid_num = geos[1] / max
+    poly = poly
+    data = df
+    bins = list(df['陽性者割合'].quantile([0, 0.25, 0.5, 0.75, 1]))
+    folium.Choropleth(
+        geo_data=poly,
+        name='choropleth',
+        data=data,
+        columns=['市区町村名','陽性者割合'],
+        key_on='properties.N03_004',
+        fill_color="RdPu", 
+        fill_opacity=0.5, 
+        line_color="black", 
+        line_opacity=0.3, 
+        legend_name=f"[{date}] 市区町村ごとのコロナ陽性者の指標",
+        bins=bins,
+        reset=True,
+        ).add_to(map)
 
-        map.choropleth(geo_data=geo, 
-                fill_color="red", fill_opacity=0.5 * covid_num, 
-                line_color="black", line_opacity=0.3)
-    
+    folium.LayerControl().add_to(map)
+
     filepath = 'templates/covid19.html'
     map.save(filepath)
     return render_template("covid19.html")
@@ -176,7 +129,7 @@ def search_plot():
     
     if request.method == 'POST':
         word = request.form['s']
-        conn = psycopg2.connect("host=localhost port=5432 dbname=tochiji user=yasu5 password=yuto5715")
+        conn = psycopg2.connect(f"host={Var.hostname} port={Var.port} dbname={Var.dbname} user={Var.username} password={Var.password}")
         cur = conn.cursor()
         cur.execute(f"SELECT 事業所・店舗名, 緯度, 経度 FROM leader_map WHERE 事業所・店舗名 LIKE '%{word}%' ")
         for row in cur:

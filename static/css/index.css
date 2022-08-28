@@ -294,3 +294,37 @@ label.btn--circle:hover {
   #sbtn:hover{
   color:#666;/*検索ボタンマウスオーバー時のフォントカラー*/ 
   }
+
+  #form2{
+    position:relative;/*フォームの相対位置*/	
+    }
+    /*検索ボックス*/
+    #nbox{
+    position:absolute;/*フォームの絶対位置*/	
+    left:-160px;
+    top: 10px;
+    width:220px;
+    outline:0;/*クリック時の青い枠線消す*/	
+    height:80px;/*検索ボックスの高さ*/	
+    border-radius:2px 0 0 2px;/*検索ボックスの角を丸める*/		
+    color:rgb(130, 126, 126);/*検索ボタンのテキストカラー*/ 
+    font-size: 20px;	
+    }
+    /*検索ボタン*/
+    #nbtn{
+    width:100px;/*検索ボタンの横幅*/ 
+    height:80px;/*検索ボタンの縦幅*/ 
+    position:absolute;/*検索ボタンの絶対位置*/  
+    left:60px;/*検索ボタンの位置調整*/  
+    top:10px;
+    border-radius:0 2px 2px 0;/*検索ボタンの角を丸める*/ 
+    background:#ef98d2;/*検索ボタンの背景カラー*/ 
+    border:none;/*検索ボタンの枠線を消す*/ 
+    color:#fff;/*検索ボタンのテキストカラー*/ 
+    font-weight:bold;/*検索ボタンのテキスト太字*/ 
+    font-size:18px;/*検索ボタンのフォントサイズ*/ 
+    }
+    /*検索ボタンマウスオーバー時*/
+    #nbtn:hover{
+    color:#666;/*検索ボタンマウスオーバー時のフォントカラー*/ 
+    }

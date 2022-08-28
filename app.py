@@ -121,40 +121,61 @@ def polygon_plot():
 
 @app.route('/',methods=['POST', "GET"])
 def search_plot():
-    
     g = GEO()
-    geometry = g.polygon()
+    df, date, poly = g.polygon()
     
     map = folium.Map(location=[35.68066659206367, 139.7681614127473], zoom_start=14)
     
-    if request.method == 'POST':
+    if request.method == 'POST' and request.form.get('s'):
         word = request.form['s']
         conn = psycopg2.connect(f"host={Var.hostname} port={Var.port} dbname={Var.dbname} user={Var.username} password={Var.password}")
         cur = conn.cursor()
         cur.execute(f"SELECT 事業所・店舗名, 緯度, 経度 FROM leader_map WHERE 事業所・店舗名 LIKE '%{word}%' ")
         for row in cur:
-            # print(row)
             folium.Marker(
             location =[row[1],row[2]],
             popup =row[0],
             icon = folium.Icon(color='red',icon='home')
         ).add_to(map)
-        
+
         cur.close()
         conn.close()
-        
-    max = 0
-    for geos in geometry:
-        if max < geos[1]:
-            max = geos[1]
 
-    for geos in geometry:
-        geo = geos[0]
-        covid_num = geos[1] / max
+    if request.method == 'POST' and request.form.get('n'):
+        word = request.form['n']
+        conn = psycopg2.connect(f"host={Var.hostname} port={Var.port} dbname={Var.dbname} user={Var.username} password={Var.password}")
+        cur = conn.cursor()
+        cur.execute(f"SELECT 事業所店舗名, 業種, 緯度, 経度 FROM tenpo_map WHERE 業種 LIKE '%{word}%' ")
+        for row in cur:
+            folium.Marker(
+            location =[row[2],row[3]],
+            popup =row[1],
+            icon = folium.Icon(color='red',icon='home')
+        ).add_to(map)
 
-        map.choropleth(geo_data=geo, 
-                fill_color="red", fill_opacity=0.5 * covid_num, 
-                line_color="black", line_opacity=0.3)
+        cur.close()
+        conn.close()
+
+
+    poly = poly
+    data = df
+    bins = list(df['陽性者割合'].quantile([0, 0.25, 0.5, 0.75, 1]))
+    folium.Choropleth(
+        geo_data=poly,
+        name='choropleth',
+        data=data,
+        columns=['市区町村名','陽性者割合'],
+        key_on='properties.N03_004',
+        fill_color="RdPu", 
+        fill_opacity=0.5, 
+        line_color="black", 
+        line_opacity=0.3, 
+        legend_name=f"[{date}] 市区町村ごとのコロナ陽性者の指標",
+        bins=bins,
+        reset=True,
+        ).add_to(map)
+    folium.LayerControl().add_to(map)
+
     
     filepath = 'templates/covid19.html'
     map.save(filepath)

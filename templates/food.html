@@ -17,13 +17,15 @@
     // // markers1
     {% for marker in markers1 %}
     L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('green') }).addTo(map)
-    .bindPopup("{{ marker['name'] }}").openPopup();
+    .bindPopup("<p>{{ marker['name'] }}</p><p>評価</p>").openPopup();
     {% endfor %}
 
     // markers2
     {% for marker in markers2 %}
     L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('orange') }).addTo(map)
-    .bindPopup("{{ marker['name'] }}").openPopup();
+    .bindPopup(
+        "<p>{{ marker['name'] }}</p><p>評価</p><span class='star-rating'><input type='radio' name='rating' value='1'><i></i><input type='radio' name='rating' value='2'><i></i><input type='radio' name='rating' value='3'><i></i><input type='radio' name='rating' value='4'><i></i><input type='radio' name='rating' value='5'><i></i></span><strong class='choice'>感染対策の評価をしてください</strong>      "
+    ).openPopup();
     {% endfor %}
 
 

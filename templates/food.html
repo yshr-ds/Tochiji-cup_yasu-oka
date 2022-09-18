@@ -9,23 +9,38 @@
 
 <!-- 現在地表示 -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.usermarker.css') }}" />
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/L.Icon.Mapkey.css') }}" />
+<script src="{{ url_for('static', filename='js/L.Icon.Mapkey.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/leaflet.usermarker.js') }}"></script>
 
 <script>
     L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.3.1/dist/images/';
 
+
+
+    options = {
+    icon:"restaurant"
+    ,size:30
+    ,color:"#48b6e2"
+    ,background:"#fff"
+    ,hoverEffect:true
+    ,borderRadius:10
+    };
+
     // // markers1
     {% for marker in markers1 %}
-    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('green') }).addTo(map)
-    .bindPopup("<p>{{ marker['name'] }}</p><p>評価</p>").openPopup();
+    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}],{icon:L.icon.mapkey(options) }).addTo(map)
+    .bindPopup("<p>{{ marker['name'] }}</p><p>評価</p>");
     {% endfor %}
 
     // markers2
     {% for marker in markers2 %}
-    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('orange') }).addTo(map)
+    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}],{icon:L.icon.mapkey(options) }).addTo(map)
     .bindPopup(
         "<p>{{ marker['name'] }}</p><p>評価</p><span class='star-rating'><input type='radio' name='rating' value='1'><i></i><input type='radio' name='rating' value='2'><i></i><input type='radio' name='rating' value='3'><i></i><input type='radio' name='rating' value='4'><i></i><input type='radio' name='rating' value='5'><i></i></span><strong class='choice'>感染対策の評価をしてください</strong>      "
-    ).openPopup();
+    );
     {% endfor %}
 
 

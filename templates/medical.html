@@ -11,34 +11,34 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.usermarker.css') }}" />
 <script src="{{ url_for('static', filename='js/leaflet.usermarker.js') }}"></script>
 
+<link rel="stylesheet" href="{{ url_for('static', filename='css/L.Icon.Mapkey.css') }}" />
+<script src="{{ url_for('static', filename='js/L.Icon.Mapkey.js') }}"></script>
+
+
 <script>
 
     L.Icon.Default.imagePath = 'https://unpkg.com/leaflet@1.3.1/dist/images/';
+    
+    options = {
+    icon:"hospital"
+    ,size:30
+    ,color:"#48b6e2"
+    ,background:"#fff"
+    ,hoverEffect:true
+    ,borderRadius:10
+    };
+
 
     // // markers3
     {% for marker in markers3 %}
-    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('yellow') }).addTo(map);
-    var popup = L.popup();
-    function onMarker2Click(e) {
-    popup
-        .setLatLng(e.latlng)
-        .setContent("{{ marker['name'] }}")
-        .openOn(map);
-    }
-    map.on('click', onMarker2Click);
+    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}],{icon:L.icon.mapkey(options) }).addTo(map)
+    .bindPopup("<p>{{ marker['name'] }}</p><ul><p>検査所の詳細</P><li>電話番号:000-0000-0000</li><li>時間:00:00~00:00</li><li>検査手法:〇〇</li></ul>")
     {% endfor %}
 
     // markers4
     {% for marker in markers4 %}
-    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}], { icon: L.spriteIcon('red') }).addTo(map);
-    var popup = L.popup();
-    function onMarker2Click(e) {
-    popup
-        .setLatLng(e.latlng)
-        .setContent("{{ marker['name'] }}")
-        .openOn(map);
-    }
-    map.on('click', onMarker2Click);
+    L.marker([{{ marker['lat'] }}, {{ marker['lon'] }}],{icon:L.icon.mapkey(options) }).addTo(map)
+    .bindPopup("<p>{{ marker['name'] }}</p><p>病院の詳細</P><ul><li>電話番号:000-0000-0000</li><li>時間:00:00~00:00</li><li>診療科:〇〇</li></ul>")
     {% endfor %}
 
     // 現在地

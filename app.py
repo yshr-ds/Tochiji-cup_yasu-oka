@@ -135,7 +135,7 @@ def search_plot():
             folium.Marker(
             location =[row[1],row[2]],
             popup =row[0],
-            icon = folium.Icon(color='red',icon='home')
+            icon = folium.Icon(color='red',icon='cutlery')
         ).add_to(map)
 
         cur.close()
@@ -150,7 +150,7 @@ def search_plot():
             folium.Marker(
             location =[row[2],row[3]],
             popup =row[1],
-            icon = folium.Icon(color='red',icon='home')
+            icon = folium.Icon(color='red',icon='cutlery')
         ).add_to(map)
 
         cur.close()
